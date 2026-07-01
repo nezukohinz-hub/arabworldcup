@@ -1,0 +1,1456 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArabWorldCup - عرب مونديال</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Cairo for beautiful Arabic Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons for premium look -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom configurations and animations -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        emeraldDeep: '#062c21',
+                        emeraldLight: '#0d5c45',
+                        goldAccent: '#d4af37',
+                        goldHover: '#f3cd45',
+                        darkBg: '#0b130f',
+                        cardBg: '#111d17',
+                        cardBorder: '#1c3127',
+                        coralRed: '#e63946'
+                    },
+                    fontFamily: {
+                        cairo: ['Cairo', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #0b130f;
+            color: #f3f4f6;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0b130f;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #0d5c45;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #d4af37;
+        }
+        /* Page transitions */
+        .page-section {
+            display: none;
+            animation: fadeIn 0.4s ease-in-out forwards;
+        }
+        .page-section.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Pulse for Live indicator */
+        .live-pulse {
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(0.95); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.5; }
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- Header & Navigation -->
+    <header class="sticky top-0 z-50 bg-emeraldDeep/95 backdrop-blur-md border-b border-goldAccent/20 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logo -->
+                <div class="flex items-center gap-3 cursor-pointer" onclick="navigateTo('home')">
+                    <div class="w-12 h-12 bg-gradient-to-tr from-goldAccent to-emeraldLight rounded-full flex items-center justify-center shadow-lg shadow-goldAccent/10">
+                        <i class="fa-solid fa-trophy text-emeraldDeep text-2xl animate-bounce"></i>
+                    </div>
+                    <div>
+                        <span class="text-2xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-l from-goldAccent to-white block">ARAB WORLD CUP</span>
+                        <span class="text-xs text-goldAccent/80 block font-semibold">بوابة المونديال العربية الأولى</span>
+                    </div>
+                </div>
+
+                <!-- Desktop Nav Navigation Links -->
+                <nav class="hidden lg:flex space-x-1 space-x-reverse xl:space-x-2 text-sm font-bold">
+                    <button onclick="navigateTo('home')" class="nav-btn px-3 py-2 rounded-lg text-white hover:text-goldAccent hover:bg-emeraldLight/30 transition-all active-nav" id="btn-home">
+                        <i class="fa-solid fa-house ml-1"></i> الرئيسية
+                    </button>
+                    <button onclick="navigateTo('schedules')" class="nav-btn px-3 py-2 rounded-lg text-gray-300 hover:text-goldAccent hover:bg-emeraldLight/30 transition-all" id="btn-schedules">
+                        <i class="fa-solid fa-calendar-days ml-1"></i> المباريات والنتائج
+                    </button>
+                    <button onclick="navigateTo('predictions')" class="nav-btn px-3 py-2 rounded-lg text-gray-300 hover:text-goldAccent hover:bg-emeraldLight/30 transition-all" id="btn-predictions">
+                        <i class="fa-solid fa-chart-line ml-1"></i> التوقعات والتحليلات
+                    </button>
+                    <button onclick="navigateTo('players')" class="nav-btn px-3 py-2 rounded-lg text-gray-300 hover:text-goldAccent hover:bg-emeraldLight/30 transition-all" id="btn-players">
+                        <i class="fa-solid fa-users ml-1"></i> أخبار اللاعبين
+                    </button>
+                    <button onclick="navigateTo('arab-teams')" class="nav-btn px-3 py-2 rounded-lg text-gray-300 hover:text-goldAccent hover:bg-emeraldLight/30 transition-all" id="btn-arab-teams">
+                        <i class="fa-solid fa-flag ml-1"></i> المنتخبات العربية
+                    </button>
+                    <button onclick="navigateTo('history')" class="nav-btn px-3 py-2 rounded-lg text-gray-300 hover:text-goldAccent hover:bg-emeraldLight/30 transition-all" id="btn-history">
+                        <i class="fa-solid fa-history ml-1"></i> تاريخ المونديال
+                    </button>
+                    <button onclick="navigateTo('media')" class="nav-btn px-3 py-2 rounded-lg text-gray-300 hover:text-goldAccent hover:bg-emeraldLight/30 transition-all" id="btn-media">
+                        <i class="fa-solid fa-images ml-1"></i> صور وفيديوهات
+                    </button>
+                </nav>
+
+                <!-- Search and Live Button -->
+                <div class="hidden sm:flex items-center gap-3">
+                    <button onclick="navigateTo('schedules')" class="bg-coralRed hover:bg-red-600 text-white font-bold px-4 py-2 rounded-full flex items-center gap-2 text-xs transition shadow-lg shadow-coralRed/20">
+                        <span class="w-2.5 h-2.5 bg-white rounded-full live-pulse"></span>
+                        مباشر الآن
+                    </button>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="lg:hidden">
+                    <button onclick="toggleMobileMenu()" class="text-white hover:text-goldAccent focus:outline-none p-2 rounded-lg bg-emeraldLight/20">
+                        <i class="fa-solid fa-bars text-2xl" id="menu-icon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden lg:hidden bg-emeraldDeep border-t border-goldAccent/10 px-4 pt-2 pb-4 space-y-2">
+            <button onclick="navigateTo('home'); toggleMobileMenu()" class="w-full text-right px-4 py-3 rounded-lg text-white hover:bg-emeraldLight/40 block font-bold transition">
+                <i class="fa-solid fa-house ml-2 text-goldAccent"></i> الرئيسية
+            </button>
+            <button onclick="navigateTo('schedules'); toggleMobileMenu()" class="w-full text-right px-4 py-3 rounded-lg text-white hover:bg-emeraldLight/40 block font-bold transition">
+                <i class="fa-solid fa-calendar-days ml-2 text-goldAccent"></i> المباريات والنتائج
+            </button>
+            <button onclick="navigateTo('predictions'); toggleMobileMenu()" class="w-full text-right px-4 py-3 rounded-lg text-white hover:bg-emeraldLight/40 block font-bold transition">
+                <i class="fa-solid fa-chart-line ml-2 text-goldAccent"></i> التوقعات والتحليلات
+            </button>
+            <button onclick="navigateTo('players'); toggleMobileMenu()" class="w-full text-right px-4 py-3 rounded-lg text-white hover:bg-emeraldLight/40 block font-bold transition">
+                <i class="fa-solid fa-users ml-2 text-goldAccent"></i> أخبار اللاعبين والمنتخبات
+            </button>
+            <button onclick="navigateTo('arab-teams'); toggleMobileMenu()" class="w-full text-right px-4 py-3 rounded-lg text-white hover:bg-emeraldLight/40 block font-bold transition">
+                <i class="fa-solid fa-flag ml-2 text-goldAccent"></i> المنتخبات العربية
+            </button>
+            <button onclick="navigateTo('history'); toggleMobileMenu()" class="w-full text-right px-4 py-3 rounded-lg text-white hover:bg-emeraldLight/40 block font-bold transition">
+                <i class="fa-solid fa-history ml-2 text-goldAccent"></i> تاريخ المونديال
+            </button>
+            <button onclick="navigateTo('media'); toggleMobileMenu()" class="w-full text-right px-4 py-3 rounded-lg text-white hover:bg-emeraldLight/40 block font-bold transition">
+                <i class="fa-solid fa-images ml-2 text-goldAccent"></i> صور وفيديوهات
+            </button>
+            <div class="pt-2 border-t border-emeraldLight">
+                <button onclick="navigateTo('schedules'); toggleMobileMenu()" class="w-full bg-coralRed text-white py-2.5 rounded-lg text-center font-bold flex items-center justify-center gap-2">
+                    <span class="w-2.5 h-2.5 bg-white rounded-full live-pulse"></span>
+                    مباراة حية جارية الآن
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Custom Alerts Container -->
+    <div id="alert-container" class="fixed top-24 left-4 z-50 max-w-sm w-full space-y-2 pointer-events-none"></div>
+
+    <main class="flex-grow">
+        <!-- ================= PAGE 1: HOME (الرئيسية) ================= -->
+        <section id="page-home" class="page-section active">
+            <!-- Hero Feature Section -->
+            <div class="relative bg-gradient-to-b from-emeraldDeep to-darkBg overflow-hidden py-16 px-4 sm:px-6 lg:px-8">
+                <!-- Background decorative elements -->
+                <div class="absolute inset-0 opacity-10 pointer-events-none">
+                    <div class="absolute top-10 right-10 w-96 h-96 bg-goldAccent rounded-full blur-3xl"></div>
+                    <div class="absolute bottom-10 left-10 w-96 h-96 bg-emeraldLight rounded-full blur-3xl"></div>
+                </div>
+                
+                <div class="max-w-7xl mx-auto relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                    <div class="lg:col-span-7 space-y-6">
+                        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-goldAccent/10 border border-goldAccent/30 text-goldAccent text-xs font-bold">
+                            <i class="fa-solid fa-star"></i> تغطية حصرية ومباشرة على مدار الساعة
+                        </span>
+                        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black leading-tight">
+                            نبض المونديال <br>
+                            <span class="text-transparent bg-clip-text bg-gradient-to-l from-goldAccent to-emeraldLight">بأعين وعواطف عربية</span>
+                        </h1>
+                        <p class="text-gray-300 text-lg sm:text-xl max-w-xl leading-relaxed">
+                            تابع أقوى تحليلات وتوقعات المباريات، نتائج حية فورية، أخبار المحترفين العرب، ومتحف حصري لأمجاد كأس العالم الكروية.
+                        </p>
+                        <div class="flex flex-wrap gap-4">
+                            <button onclick="navigateTo('schedules')" class="bg-gradient-to-l from-goldAccent to-goldHover text-emeraldDeep font-extrabold px-8 py-4 rounded-xl shadow-lg hover:shadow-goldAccent/20 transition-all flex items-center gap-2">
+                                <i class="fa-solid fa-circle-play"></i> مركز المباريات المباشرة
+                            </button>
+                            <button onclick="navigateTo('predictions')" class="bg-emeraldLight/20 border border-emeraldLight hover:bg-emeraldLight/40 text-white font-bold px-6 py-4 rounded-xl transition-all">
+                                <i class="fa-solid fa-chart-line ml-2"></i> توقع النتيجة واربح!
+                            </button>
+                        </div>
+                        <!-- Trending Hashtags -->
+                        <div class="pt-4 flex flex-wrap items-center gap-2">
+                            <span class="text-xs text-gray-400">الأكثر بحثاً اليوم:</span>
+                            <span onclick="searchByTag('المغرب')" class="cursor-pointer bg-cardBg border border-cardBorder hover:border-goldAccent text-xs text-gray-300 px-3 py-1 rounded-full transition">#أسود_الأطلس</span>
+                            <span onclick="searchByTag('ميسي')" class="cursor-pointer bg-cardBg border border-cardBorder hover:border-goldAccent text-xs text-gray-300 px-3 py-1 rounded-full transition">#مستقبل_البرغوث</span>
+                            <span onclick="searchByTag('السعودية')" class="cursor-pointer bg-cardBg border border-cardBorder hover:border-goldAccent text-xs text-gray-300 px-3 py-1 rounded-full transition">#الأخضر_المونديالي</span>
+                            <span onclick="searchByTag('توقعات')" class="cursor-pointer bg-cardBg border border-cardBorder hover:border-goldAccent text-xs text-gray-300 px-3 py-1 rounded-full transition">#كمبيوتر_المونديال</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Feature Hero Card - Live Match Simulation preview -->
+                    <div class="lg:col-span-5">
+                        <div class="bg-cardBg border border-cardBorder rounded-2xl p-6 shadow-2xl relative">
+                            <div class="absolute -top-3 left-4 bg-coralRed text-white text-xs px-3 py-1 rounded-full font-bold flex items-center gap-1">
+                                <span class="w-1.5 h-1.5 bg-white rounded-full live-pulse"></span> مباشر الآن
+                            </div>
+                            <span class="text-xs text-gray-400 block mb-4 text-center font-bold">المجموعة الثالثة - الجولة الثانية</span>
+                            <div class="flex justify-between items-center py-4">
+                                <div class="text-center w-5/12">
+                                    <img src="https://placehold.co/80x80/2a3e35/ffffff?text=KSA" alt="السعودية" class="w-16 h-16 mx-auto rounded-full border-2 border-emeraldLight shadow-md" onerror="this.src='https://placehold.co/80x80/ffffff/000000?text=KSA'">
+                                    <span class="block mt-2 font-black text-lg">السعودية</span>
+                                </div>
+                                <div class="text-center w-2/12">
+                                    <span class="text-3xl font-black text-goldAccent" id="live-hero-score">2 - 1</span>
+                                    <span class="block text-xs text-emeraldLight font-bold mt-1 bg-emeraldLight/10 rounded px-1" id="live-hero-time">د 78'</span>
+                                </div>
+                                <div class="text-center w-5/12">
+                                    <img src="https://placehold.co/80x80/2a3e35/ffffff?text=ARG" alt="الأرجنتين" class="w-16 h-16 mx-auto rounded-full border-2 border-emeraldLight shadow-md" onerror="this.src='https://placehold.co/80x80/ffffff/000000?text=ARG'">
+                                    <span class="block mt-2 font-black text-lg">الأرجنتين</span>
+                                </div>
+                            </div>
+                            <div class="bg-emeraldDeep/50 p-3 rounded-xl border border-emeraldLight/20 text-xs text-center text-gray-300 mt-4 leading-relaxed">
+                                <i class="fa-solid fa-bolt text-goldAccent ml-1"></i> <strong>أحدث حدث:</strong> سالم الدوسري يطلق قذيفة لا تصد ولا ترد في المقص الأيمن للحارس مارتينيز!
+                            </div>
+                            <button onclick="navigateTo('schedules')" class="w-full mt-4 py-2.5 bg-emeraldLight hover:bg-emeraldLight/80 text-white rounded-xl text-sm font-bold transition flex items-center justify-center gap-2">
+                                تفاصيل ومتابعة المباراة دقيقة بدقيقة <i class="fa-solid fa-angles-left text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main News Hub & Grid -->
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+                <div class="flex justify-between items-end mb-10 border-b border-emeraldLight/20 pb-4">
+                    <div>
+                        <h2 class="text-2xl sm:text-3xl font-black text-white"><i class="fa-solid fa-newspaper text-goldAccent ml-2"></i> آخر الأخبار والتقارير</h2>
+                        <p class="text-xs sm:text-sm text-gray-400 mt-1">تغطية صحفية مكثفة لأحداث الساعة</p>
+                    </div>
+                    <!-- News Filters -->
+                    <div class="flex gap-2">
+                        <select id="news-category-filter" onchange="filterNews()" class="bg-cardBg border border-cardBorder text-gray-300 px-3 py-1.5 rounded-lg text-xs font-bold focus:border-goldAccent focus:outline-none">
+                            <option value="all">كل التصنيفات</option>
+                            <option value="predictions">توقعات وتحليلات</option>
+                            <option value="players">أخبار اللاعبين</option>
+                            <option value="arab">المنتخبات العربية</option>
+                            <option value="history">تاريخ المونديال</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Dynamic News Grid Container -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="news-grid-container">
+                    <!-- Cards injected by JS -->
+                </div>
+                
+                <!-- Fan Poll Area -->
+                <div class="mt-16 bg-gradient-to-tr from-cardBg to-emeraldDeep/40 border border-cardBorder p-8 rounded-2xl shadow-xl">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                        <div class="lg:col-span-5 space-y-4">
+                            <span class="bg-goldAccent/15 text-goldAccent text-xs font-bold px-3 py-1 rounded-full border border-goldAccent/20">استطلاع مشجعي المونديال اليومي</span>
+                            <h3 class="text-2xl font-black text-white" id="poll-question">من هو المنتخب العربي الأقرب للوصول إلى المربع الذهبي في المونديال القادم؟</h3>
+                            <p class="text-sm text-gray-400 leading-relaxed">شارك برأيك وصوّت الآن لترى نتائج آراء الجماهير العربية عبر منصتنا فوراً.</p>
+                        </div>
+                        <div class="lg:col-span-7 space-y-3" id="poll-options-container">
+                            <!-- Poll items injected dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PAGE 2: PREDICTIONS (التوقعات والتحليلات) ================= -->
+        <section id="page-predictions" class="page-section">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <!-- Page Intro -->
+                <div class="text-center max-w-2xl mx-auto mb-12">
+                    <span class="text-goldAccent bg-goldAccent/10 text-xs px-4 py-1.5 rounded-full font-bold border border-goldAccent/20"><i class="fa-solid fa-robot"></i> ذكاء اصطناعي وتحليل كروي فائق</span>
+                    <h1 class="text-3xl sm:text-4xl font-black text-white mt-3">توقعات وتحليلات كبار الخبراء وسوبر كمبيوتر</h1>
+                    <p class="text-sm text-gray-400 mt-2">نقدم لك نسبة توقعات دقيقة للمباريات مبنية على مستويات المنتخبات، تكتيك المدربين، والإحصائيات الحديثة مع إمكانية مشاركة توقعاتك.</p>
+                </div>
+
+                <!-- Live Predictor Hub -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Predictor interactive column (Left) -->
+                    <div class="lg:col-span-2 space-y-6">
+                        <h2 class="text-xl font-bold text-white border-r-4 border-goldAccent pr-3">قائمة التوقعات المتاحة للتصويت</h2>
+                        
+                        <!-- Predictor Card 1 -->
+                        <div class="bg-cardBg border border-cardBorder p-6 rounded-2xl relative overflow-hidden group">
+                            <div class="flex justify-between items-center mb-6">
+                                <span class="text-xs bg-emeraldLight/20 text-emeraldLight px-3 py-1 rounded-full font-bold">متاح للتصويت الجماهيري</span>
+                                <span class="text-xs text-gray-400 font-bold"><i class="fa-regular fa-clock ml-1"></i> ينتهي التصويت خلال 5 ساعات</span>
+                            </div>
+                            
+                            <div class="flex justify-around items-center text-center">
+                                <div class="space-y-2">
+                                    <img src="https://placehold.co/80x80/2a3e35/ffffff?text=MAR" alt="المغرب" class="w-16 h-16 mx-auto rounded-full border-2 border-emeraldLight">
+                                    <span class="block font-black text-lg">المغرب</span>
+                                </div>
+                                <div class="text-center font-black text-goldAccent text-2xl px-4 py-2 bg-emeraldDeep rounded-xl border border-emeraldLight/20">VS</div>
+                                <div class="space-y-2">
+                                    <img src="https://placehold.co/80x80/2a3e35/ffffff?text=ESP" alt="إسبانيا" class="w-16 h-16 mx-auto rounded-full border-2 border-emeraldLight">
+                                    <span class="block font-black text-lg">إسبانيا</span>
+                                </div>
+                            </div>
+
+                            <!-- Interactive Votes inputs -->
+                            <div class="mt-8 space-y-4">
+                                <p class="text-xs text-gray-400 text-center font-bold">بماذا تتوقع نتيجة اللقاء؟ اضغط للتصويت فوراً</p>
+                                <div class="grid grid-cols-3 gap-3">
+                                    <button onclick="castPredictorVote('mar-esp', 'team1')" class="bg-emeraldDeep/50 hover:bg-emeraldLight border border-emeraldLight/30 text-white font-bold py-3 px-2 rounded-xl text-xs transition">فوز المغرب</button>
+                                    <button onclick="castPredictorVote('mar-esp', 'draw')" class="bg-emeraldDeep/50 hover:bg-emeraldLight border border-emeraldLight/30 text-white font-bold py-3 px-2 rounded-xl text-xs transition">تعادل المنتخبان</button>
+                                    <button onclick="castPredictorVote('mar-esp', 'team2')" class="bg-emeraldDeep/50 hover:bg-emeraldLight border border-emeraldLight/30 text-white font-bold py-3 px-2 rounded-xl text-xs transition">فوز إسبانيا</button>
+                                </div>
+                                <!-- Results progress bar -->
+                                <div class="pt-2">
+                                    <div class="flex justify-between text-xs text-gray-400 mb-2 font-semibold">
+                                        <span>توقعات الجماهير: المغرب (<span id="mar-esp-t1-pct">54</span>%)</span>
+                                        <span>تعادل (<span id="mar-esp-dr-pct">16</span>%)</span>
+                                        <span>إسبانيا (<span id="mar-esp-t2-pct">30</span>%)</span>
+                                    </div>
+                                    <div class="h-2 w-full bg-emeraldDeep rounded-full overflow-hidden flex">
+                                        <div id="mar-esp-t1-bar" class="bg-emeraldLight h-full transition-all duration-500" style="width: 54%"></div>
+                                        <div id="mar-esp-dr-bar" class="bg-gray-500 h-full transition-all duration-500" style="width: 16%"></div>
+                                        <div id="mar-esp-t2-bar" class="bg-coralRed h-full transition-all duration-500" style="width: 30%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Predictor Card 2 -->
+                        <div class="bg-cardBg border border-cardBorder p-6 rounded-2xl relative overflow-hidden group">
+                            <div class="flex justify-between items-center mb-6">
+                                <span class="text-xs bg-emeraldLight/20 text-emeraldLight px-3 py-1 rounded-full font-bold">متاح للتصويت الجماهيري</span>
+                                <span class="text-xs text-gray-400 font-bold"><i class="fa-regular fa-clock ml-1"></i> ينتهي التصويت خلال يومين</span>
+                            </div>
+                            
+                            <div class="flex justify-around items-center text-center">
+                                <div class="space-y-2">
+                                    <img src="https://placehold.co/80x80/2a3e35/ffffff?text=KSA" alt="السعودية" class="w-16 h-16 mx-auto rounded-full border-2 border-emeraldLight">
+                                    <span class="block font-black text-lg">السعودية</span>
+                                </div>
+                                <div class="text-center font-black text-goldAccent text-2xl px-4 py-2 bg-emeraldDeep rounded-xl border border-emeraldLight/20">VS</div>
+                                <div class="space-y-2">
+                                    <img src="https://placehold.co/80x80/2a3e35/ffffff?text=MEX" alt="المكسيك" class="w-16 h-16 mx-auto rounded-full border-2 border-emeraldLight">
+                                    <span class="block font-black text-lg">المكسيك</span>
+                                </div>
+                            </div>
+
+                            <div class="mt-8 space-y-4">
+                                <p class="text-xs text-gray-400 text-center font-bold">بماذا تتوقع نتيجة اللقاء؟ اضغط للتصويت فوراً</p>
+                                <div class="grid grid-cols-3 gap-3">
+                                    <button onclick="castPredictorVote('ksa-mex', 'team1')" class="bg-emeraldDeep/50 hover:bg-emeraldLight border border-emeraldLight/30 text-white font-bold py-3 px-2 rounded-xl text-xs transition">فوز السعودية</button>
+                                    <button onclick="castPredictorVote('ksa-mex', 'draw')" class="bg-emeraldDeep/50 hover:bg-emeraldLight border border-emeraldLight/30 text-white font-bold py-3 px-2 rounded-xl text-xs transition">تعادل المنتخبان</button>
+                                    <button onclick="castPredictorVote('ksa-mex', 'team2')" class="bg-emeraldDeep/50 hover:bg-emeraldLight border border-emeraldLight/30 text-white font-bold py-3 px-2 rounded-xl text-xs transition">فوز المكسيك</button>
+                                </div>
+                                <div class="pt-2">
+                                    <div class="flex justify-between text-xs text-gray-400 mb-2 font-semibold">
+                                        <span>السعودية (<span id="ksa-mex-t1-pct">42</span>%)</span>
+                                        <span>تعادل (<span id="ksa-mex-dr-pct">23</span>%)</span>
+                                        <span>المكسيك (<span id="ksa-mex-t2-pct">35</span>%)</span>
+                                    </div>
+                                    <div class="h-2 w-full bg-emeraldDeep rounded-full overflow-hidden flex">
+                                        <div id="ksa-mex-t1-bar" class="bg-emeraldLight h-full transition-all duration-500" style="width: 42%"></div>
+                                        <div id="ksa-mex-dr-bar" class="bg-gray-500 h-full transition-all duration-500" style="width: 23%"></div>
+                                        <div id="ksa-mex-t2-bar" class="bg-coralRed h-full transition-all duration-500" style="width: 35%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Supercomputer Analysis Insights (Right Side) -->
+                    <div class="space-y-6">
+                        <h2 class="text-xl font-bold text-white border-r-4 border-goldAccent pr-3">سوبر كمبيوتر التحليلي</h2>
+                        
+                        <div class="bg-gradient-to-tr from-emeraldDeep to-cardBg border border-emeraldLight/30 p-6 rounded-2xl space-y-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-goldAccent/10 rounded-xl flex items-center justify-center text-goldAccent">
+                                    <i class="fa-solid fa-brain"></i>
+                                </div>
+                                <h3 class="font-bold text-white">رؤية الذكاء الاصطناعي لمباراة القمة</h3>
+                            </div>
+                            <p class="text-xs text-gray-300 leading-relaxed">
+                                تشير قراءة بيانات المواجهات السابقة وحالات اللاعبين الحالية إلى أفضلية هجومية طفيفة لمنتخب المغرب بنسبة استحواذ قد تصل إلى 52% أمام إسبانيا، بفضل الاستمرارية الرائعة لنجم خط الوسط سفيان أمرابط والأطراف السريعة.
+                            </p>
+                            <div class="bg-emeraldDeep p-3 rounded-lg border border-emeraldLight/20">
+                                <span class="text-xs text-goldAccent block font-bold mb-1">النتيجة الأكثر ترجيحاً الكترونياً:</span>
+                                <span class="text-base font-black text-white">المغرب 2 - 1 إسبانيا</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-cardBg border border-cardBorder p-6 rounded-2xl space-y-4">
+                            <h3 class="font-bold text-white text-sm"><i class="fa-solid fa-ranking-star text-goldAccent ml-2"></i> أعلى المتابعين نجاحاً بالتوقعات</h3>
+                            <div class="space-y-3">
+                                <div class="flex justify-between items-center text-xs">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-6 h-6 bg-goldAccent/20 rounded-full flex items-center justify-center text-goldAccent text-[10px] font-bold">1</span>
+                                        <span>ياسين من الدار البيضاء</span>
+                                    </div>
+                                    <span class="text-emeraldLight font-bold">92% توقعات صحيحة</span>
+                                </div>
+                                <div class="flex justify-between items-center text-xs">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-6 h-6 bg-gray-400/20 rounded-full flex items-center justify-center text-gray-400 text-[10px] font-bold">2</span>
+                                        <span>فهد من الرياض</span>
+                                    </div>
+                                    <span class="text-emeraldLight font-bold">89% توقعات صحيحة</span>
+                                </div>
+                                <div class="flex justify-between items-center text-xs">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-6 h-6 bg-amber-700/20 rounded-full flex items-center justify-center text-amber-700 text-[10px] font-bold">3</span>
+                                        <span>سارة من القاهرة</span>
+                                    </div>
+                                    <span class="text-emeraldLight font-bold">85% توقعات صحيحة</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PAGE 3: PLAYERS NEWS (أخبار اللاعبين والمنتخبات) ================= -->
+        <section id="page-players" class="page-section">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12 border-b border-emeraldLight/20 pb-6">
+                    <div>
+                        <h1 class="text-3xl font-black text-white"><i class="fa-solid fa-users-gear text-goldAccent ml-2"></i> أخبار اللاعبين والمنتخبات العالمية</h1>
+                        <p class="text-sm text-gray-400 mt-1">كواليس المعسكرات، الإصابات، الانتقالات الصيفية، وتصريحات النجوم.</p>
+                    </div>
+                    <!-- Search Input -->
+                    <div class="relative w-full md:w-80">
+                        <i class="fa-solid fa-magnifying-glass absolute right-3.5 top-3 text-gray-400 text-sm"></i>
+                        <input type="text" id="player-search-input" onkeyup="searchPlayers()" placeholder="ابحث عن لاعب أو منتخب..." class="w-full bg-cardBg border border-cardBorder rounded-xl py-2.5 pr-10 pl-4 text-sm text-gray-300 placeholder-gray-500 focus:border-goldAccent focus:outline-none focus:ring-1 focus:ring-goldAccent">
+                    </div>
+                </div>
+
+                <!-- Featured Player Spotlight Card -->
+                <div class="bg-gradient-to-tr from-emeraldDeep to-emeraldLight/10 border border-goldAccent/20 rounded-3xl p-6 sm:p-8 mb-12 shadow-xl">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                        <div class="lg:col-span-4 text-center lg:text-right">
+                            <img src="https://placehold.co/300x300/111d17/ffffff?text=Hakimi" alt="أشرف حكيمي" class="w-56 h-56 mx-auto lg:mr-0 rounded-2xl object-cover border-4 border-goldAccent shadow-2xl" onerror="this.src='https://placehold.co/300x300/ffffff/000000?text=Hakimi'">
+                        </div>
+                        <div class="lg:col-span-8 space-y-4">
+                            <span class="bg-goldAccent text-emeraldDeep text-[11px] font-black px-3 py-1 rounded-full uppercase">نجم الأسبوع بالمونديال</span>
+                            <h2 class="text-2xl sm:text-3xl font-black text-white">أشرف حكيمي يقود حملة تحفيزية لزملائه بفرنسا قبل مواجهة كندا الودية</h2>
+                            <p class="text-gray-300 text-sm sm:text-base leading-relaxed">
+                                أكد الظهير الطائر للمنتخب المغربي ونادي باريس سان جيرمان، أشرف حكيمي، أن التركيز العالي في تدريبات النخبة المغربية يعكس مدى رغبتهم في الحفاظ على المكتسبات التاريخية وصنع ربيع مونديالي جديد يسعد ملايين الجماهير العربية.
+                            </p>
+                            <div class="flex flex-wrap gap-4 pt-2">
+                                <div class="bg-emeraldDeep px-4 py-2 rounded-xl text-xs"><span class="text-goldAccent font-bold">المنتخب:</span> المغرب</div>
+                                <div class="bg-emeraldDeep px-4 py-2 rounded-xl text-xs"><span class="text-goldAccent font-bold">المركز:</span> ظهير أيمن مدرع</div>
+                                <div class="bg-emeraldDeep px-4 py-2 rounded-xl text-xs"><span class="text-goldAccent font-bold">القيمة السوقية:</span> 65 مليون يورو</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Players News list -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="players-news-container">
+                    <!-- Cards will be populated dynamically -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PAGE 4: WORLD CUP HISTORY (تاريخ المونديال) ================= -->
+        <section id="page-history" class="page-section">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <div class="text-center max-w-2xl mx-auto mb-16">
+                    <span class="text-goldAccent bg-goldAccent/10 text-xs px-4 py-1.5 rounded-full font-bold border border-goldAccent/20"><i class="fa-solid fa-landmark"></i> عبق وتراث المونديال</span>
+                    <h1 class="text-3xl sm:text-4xl font-black text-white mt-3">متحف تاريخ كأس العالم الكروي</h1>
+                    <p class="text-sm text-gray-400 mt-2">استكشف السجل التاريخي للأبطال والأرقام القياسية منذ انطلاقة البطولة الأولى بأوروغواي عام 1930.</p>
+                </div>
+
+                <!-- Interactive Timeline Grid -->
+                <div class="mb-16">
+                    <h2 class="text-2xl font-black text-white mb-8 border-r-4 border-goldAccent pr-3"><i class="fa-solid fa-timeline text-goldAccent ml-2"></i> محطات تاريخية لا تُنسى</h2>
+                    <div class="relative border-r border-emeraldLight/30 mr-4 md:mr-8 space-y-8">
+                        
+                        <!-- Timeline Item 1 -->
+                        <div class="relative pr-8">
+                            <div class="absolute -right-[9px] top-1.5 w-4.5 h-4.5 rounded-full bg-goldAccent border-4 border-darkBg"></div>
+                            <span class="text-goldAccent font-bold text-lg block">مونديال الأوروغواي 1930</span>
+                            <h3 class="text-white font-extrabold text-base mt-1">البطولة الأولى والانطلاقة الكبرى</h3>
+                            <p class="text-gray-400 text-xs sm:text-sm mt-1 max-w-3xl leading-relaxed">
+                                نظمت الأوروغواي النسخة الأولى من كأس العالم بمشاركة 13 دولة فقط، وتوجت الأوروغواي بأول لقب في التاريخ بعد فوزها على الأرجنتين في النهائي المثير بنتيجة 4-2.
+                            </p>
+                        </div>
+
+                        <!-- Timeline Item 2 -->
+                        <div class="relative pr-8">
+                            <div class="absolute -right-[9px] top-1.5 w-4.5 h-4.5 rounded-full bg-emeraldLight border-4 border-darkBg"></div>
+                            <span class="text-emeraldLight font-bold text-lg block">مونديال المكسيك 1986</span>
+                            <h3 class="text-white font-extrabold text-base mt-1">بطولة الأسطورة دييغو مارادونا وعقد المغرب الذهبي</h3>
+                            <p class="text-gray-400 text-xs sm:text-sm mt-1 max-w-3xl leading-relaxed">
+                                بطولة شهدت لمعان دييغو مارادونا وتسجيل هدفه الشهير بيده ثم هدفه الأسطوري بمراوغة فريق إنجلترا بأكمله. في نفس البطولة تألق المغرب كأول منتخب عربي يتخطى دور المجموعات متصدراً مجموعته التاريخية.
+                            </p>
+                        </div>
+
+                        <!-- Timeline Item 3 -->
+                        <div class="relative pr-8">
+                            <div class="absolute -right-[9px] top-1.5 w-4.5 h-4.5 rounded-full bg-goldAccent border-4 border-darkBg"></div>
+                            <span class="text-goldAccent font-bold text-lg block">مونديال قطر 2022</span>
+                            <h3 class="text-white font-extrabold text-base mt-1">البطولة العربية الأفضل تاريخياً وإنجاز المغرب الأسطوري</h3>
+                            <p class="text-gray-400 text-xs sm:text-sm mt-1 max-w-3xl leading-relaxed">
+                                أول بطولة تقام على أرض عربية وإسلامية أبهرت العالم بالتنظيم الاستثنائي، وشهدت كتابة تاريخ عظيم لمنتخب أسود الأطلس بوصولهم للمركز الرابع كأول منتخب عربي وإفريقي يبلغ المربع الذهبي، وتوج ليونيل ميسي أخيراً باللقب مع الأرجنتين.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- World Cup Trivia Interactive Mini-Game -->
+                <div class="bg-gradient-to-tr from-cardBg to-emeraldDeep border border-cardBorder p-8 rounded-3xl shadow-2xl">
+                    <div class="max-w-3xl mx-auto text-center space-y-6">
+                        <span class="text-goldAccent bg-goldAccent/10 text-xs px-3 py-1 rounded-full font-bold border border-goldAccent/20">تحدي معلوماتك الكروية</span>
+                        <h2 class="text-2xl sm:text-3xl font-black text-white"><i class="fa-solid fa-gamepad text-goldAccent ml-2"></i> مسابقة تاريخ المونديال السريعة</h2>
+                        <p class="text-sm text-gray-400">اختبر معلوماتك التاريخية واثبت للجميع أنك من كبار خبراء كرة القدم والمونديال!</p>
+                        
+                        <!-- Quiz Container Box -->
+                        <div id="quiz-container" class="bg-emeraldDeep/50 p-6 rounded-2xl border border-emeraldLight/30 text-right mt-6">
+                            <span class="text-xs text-goldAccent font-bold" id="quiz-question-number">السؤال 1 من 3</span>
+                            <h3 class="text-lg font-bold text-white mt-2" id="quiz-question">أي بلد كان أول من يستضيف بطولة كأس العالم لكرة القدم في التاريخ عام 1930؟</h3>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6" id="quiz-options">
+                                <!-- Choices loaded dynamically -->
+                            </div>
+                        </div>
+
+                        <!-- Quiz Feedback & Navigation Area -->
+                        <div class="flex justify-between items-center pt-2">
+                            <span class="text-xs text-gray-400">مجموع نقاطك الحالية: <strong class="text-goldAccent text-sm" id="quiz-score">0</strong></span>
+                            <button id="quiz-next-btn" onclick="nextQuizQuestion()" class="hidden bg-goldAccent hover:bg-goldHover text-emeraldDeep font-bold px-6 py-2 rounded-xl text-xs transition">
+                                السؤال التالي <i class="fa-solid fa-arrow-left mr-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PAGE 5: ARAB TEAMS (المنتخبات العربية) ================= -->
+        <section id="page-arab-teams" class="page-section">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <div class="text-center max-w-2xl mx-auto mb-16">
+                    <span class="text-goldAccent bg-goldAccent/10 text-xs px-4 py-1.5 rounded-full font-bold border border-goldAccent/20"><i class="fa-solid fa-heart"></i> معاً لدعم الفخر العربي</span>
+                    <h1 class="text-3xl sm:text-4xl font-black text-white mt-3">رابطة المشجعين للمنتخبات العربية</h1>
+                    <p class="text-sm text-gray-400 mt-2">مسار خاص لتغطية تاريخ وإنجازات المنتخبات العربية التي شرفت الكرة العربية في المحافل العالمية.</p>
+                </div>
+
+                <!-- Interactive Fan Cheer Wall -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Arab Team card: Morocco -->
+                    <div class="bg-cardBg border border-cardBorder rounded-2xl p-6 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center mb-4">
+                                <span class="bg-red-600/20 text-red-500 text-xs font-bold px-3 py-1 rounded-full border border-red-500/20">أسود الأطلس</span>
+                                <span class="text-xs text-gray-400">المغرب</span>
+                            </div>
+                            <img src="https://placehold.co/120x80/2a3e35/ffffff?text=Morocco" alt="علم المغرب" class="w-20 h-14 rounded-lg shadow border border-emeraldLight/35 mb-4 object-cover" onerror="this.src='https://placehold.co/120x80/ffffff/000000?text=Morocco'">
+                            <h3 class="text-xl font-bold text-white mb-2">المنتخب المغربي</h3>
+                            <p class="text-xs text-gray-400 leading-relaxed mb-4">
+                                صاحب الإنجاز التاريخي الأفضل إطلاقاً بحصده المركز الرابع ببطولة قطر 2022، ومشاركاته الخمس السابقة التي أبهرت العالم بأسلوب اللعب التكتيكي والمنضبط.
+                            </p>
+                        </div>
+                        <div class="pt-4 border-t border-emeraldLight/25 flex justify-between items-center">
+                            <button onclick="cheerTeam('morocco')" class="bg-red-600 hover:bg-red-500 text-white font-bold py-2 px-4 rounded-xl text-xs flex items-center gap-1.5 transition">
+                                <i class="fa-solid fa-bullhorn"></i> اهتف لأسود الأطلس!
+                            </button>
+                            <span class="text-xs text-gray-300">الهتافات: <strong class="text-goldAccent" id="cheers-morocco">1,240</strong></span>
+                        </div>
+                    </div>
+
+                    <!-- Arab Team card: Saudi Arabia -->
+                    <div class="bg-cardBg border border-cardBorder rounded-2xl p-6 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center mb-4">
+                                <span class="bg-emeraldLight/20 text-emeraldLight text-xs font-bold px-3 py-1 rounded-full border border-emeraldLight/30">الأخضر السعودي</span>
+                                <span class="text-xs text-gray-400">السعودية</span>
+                            </div>
+                            <img src="https://placehold.co/120x80/2a3e35/ffffff?text=Saudi" alt="علم السعودية" class="w-20 h-14 rounded-lg shadow border border-emeraldLight/35 mb-4 object-cover" onerror="this.src='https://placehold.co/120x80/ffffff/000000?text=Saudi'">
+                            <h3 class="text-xl font-bold text-white mb-2">المنتخب السعودي</h3>
+                            <p class="text-xs text-gray-400 leading-relaxed mb-4">
+                                المنتخب الآسيوي العربي الأعرق بالمونديال، صاحب الفوز الأسطوري على الأرجنتين في 2022 والتأهل العظيم لدور الـ 16 في مشاركته الأولى الرائعة عام 1994.
+                            </p>
+                        </div>
+                        <div class="pt-4 border-t border-emeraldLight/25 flex justify-between items-center">
+                            <button onclick="cheerTeam('saudi')" class="bg-emeraldLight hover:bg-emeraldLight/80 text-white font-bold py-2 px-4 rounded-xl text-xs flex items-center gap-1.5 transition">
+                                <i class="fa-solid fa-bullhorn"></i> اهتف للأخضر السعودي!
+                            </button>
+                            <span class="text-xs text-gray-300">الهتافات: <strong class="text-goldAccent" id="cheers-saudi">950</strong></span>
+                        </div>
+                    </div>
+
+                    <!-- Arab Team card: Egypt -->
+                    <div class="bg-cardBg border border-cardBorder rounded-2xl p-6 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center mb-4">
+                                <span class="bg-gray-500/20 text-gray-300 text-xs font-bold px-3 py-1 rounded-full border border-gray-500/30">الفراعنة</span>
+                                <span class="text-xs text-gray-400">مصر</span>
+                            </div>
+                            <img src="https://placehold.co/120x80/2a3e35/ffffff?text=Egypt" alt="علم مصر" class="w-20 h-14 rounded-lg shadow border border-emeraldLight/35 mb-4 object-cover" onerror="this.src='https://placehold.co/120x80/ffffff/000000?text=Egypt'">
+                            <h3 class="text-xl font-bold text-white mb-2">المنتخب المصري</h3>
+                            <p class="text-xs text-gray-400 leading-relaxed mb-4">
+                                أول منتخب إفريقي وعربي يشارك في تاريخ كأس العالم بنسخة إيطاليا عام 1934، وصاحب التاريخ الكروي المجيد في القارة السمراء، بمشاركاته التاريخية المليئة بالإثارة.
+                            </p>
+                        </div>
+                        <div class="pt-4 border-t border-emeraldLight/25 flex justify-between items-center">
+                            <button onclick="cheerTeam('egypt')" class="bg-emeraldDeep border border-emeraldLight/55 hover:bg-emeraldLight text-white font-bold py-2 px-4 rounded-xl text-xs flex items-center gap-1.5 transition">
+                                <i class="fa-solid fa-bullhorn"></i> اهتف للفراعنة!
+                            </button>
+                            <span class="text-xs text-gray-300">الهتافات: <strong class="text-goldAccent" id="cheers-egypt">820</strong></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PAGE 6: MEDIA GALLERY (صور وفيديوهات) ================= -->
+        <section id="page-media" class="page-section">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12 border-b border-emeraldLight/20 pb-6">
+                    <div>
+                        <h1 class="text-3xl font-black text-white"><i class="fa-solid fa-photo-film text-goldAccent ml-2"></i> استوديو صور وفيديوهات المونديال</h1>
+                        <p class="text-sm text-gray-400 mt-1">شاهد أروع لقطات اللقاءات الكروية، فرحة المدرجات، وأهداف النجوم الحصرية بجودة عالية.</p>
+                    </div>
+                    <!-- Filter Tabs -->
+                    <div class="flex gap-2">
+                        <button onclick="filterMedia('all')" class="bg-goldAccent text-emeraldDeep font-bold px-4 py-2 rounded-xl text-xs transition" id="media-tab-all">الكل</button>
+                        <button onclick="filterMedia('video')" class="bg-cardBg hover:bg-emeraldLight/25 border border-cardBorder text-gray-300 font-bold px-4 py-2 rounded-xl text-xs transition" id="media-tab-video">فيديو</button>
+                        <button onclick="filterMedia('photo')" class="bg-cardBg hover:bg-emeraldLight/25 border border-cardBorder text-gray-300 font-bold px-4 py-2 rounded-xl text-xs transition" id="media-tab-photo">صور</button>
+                    </div>
+                </div>
+
+                <!-- Media Gallery Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8" id="media-grid">
+                    <!-- Media item 1 (video) -->
+                    <div class="media-item video bg-cardBg border border-cardBorder rounded-2xl overflow-hidden group cursor-pointer" onclick="openMediaLightbox('video', 'ملخص انتصار المغرب التاريخي بنصف النهائي', 'https://placehold.co/600x400/0d5c45/ffffff?text=Video+Morocco+Match')">
+                        <div class="relative overflow-hidden">
+                            <img src="https://placehold.co/600x400/0a2e24/ffffff?text=Morocco+Wins" alt="المغرب" class="w-full h-48 object-cover group-hover:scale-105 transition duration-300">
+                            <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
+                                <span class="w-12 h-12 bg-goldAccent rounded-full flex items-center justify-center text-emeraldDeep text-lg shadow-lg group-hover:scale-110 transition"><i class="fa-solid fa-play"></i></span>
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <span class="text-goldAccent text-[10px] font-bold block mb-1">فيديو حصري</span>
+                            <h3 class="text-white font-bold text-sm">شاهد من جديد ملخص الانتصار الكروي التاريخي لأسود الأطلس</h3>
+                        </div>
+                    </div>
+
+                    <!-- Media item 2 (photo) -->
+                    <div class="media-item photo bg-cardBg border border-cardBorder rounded-2xl overflow-hidden group cursor-pointer" onclick="openMediaLightbox('photo', 'فرحة الجماهير السعودية في الرياض بمباراة الأرجنتين', 'https://placehold.co/600x400/0d5c45/ffffff?text=Saudi+Fans')">
+                        <div class="relative overflow-hidden">
+                            <img src="https://placehold.co/600x400/0a2e24/ffffff?text=Saudi+Fans" alt="جمهور السعودية" class="w-full h-48 object-cover group-hover:scale-105 transition duration-300">
+                            <div class="absolute inset-0 bg-black/20 flex items-end p-4">
+                                <span class="bg-emeraldDeep/80 text-white text-xs font-bold px-2 py-1 rounded">عرض الصورة الكاملة</span>
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <span class="text-goldAccent text-[10px] font-bold block mb-1">صورة مميزة</span>
+                            <h3 class="text-white font-bold text-sm">أهازيج وفرحة مشجعي الأخضر السعودي داخل المدرجات</h3>
+                        </div>
+                    </div>
+
+                    <!-- Media item 3 (video) -->
+                    <div class="media-item video bg-cardBg border border-cardBorder rounded-2xl overflow-hidden group cursor-pointer" onclick="openMediaLightbox('video', 'كواليس معسكر منتخب مصر وحوارات طريفة للاعبين', 'https://placehold.co/600x400/0d5c45/ffffff?text=Egypt+Camp')">
+                        <div class="relative overflow-hidden">
+                            <img src="https://placehold.co/600x400/0a2e24/ffffff?text=Egypt+Camp" alt="معسكر الفراعنة" class="w-full h-48 object-cover group-hover:scale-105 transition duration-300">
+                            <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
+                                <span class="w-12 h-12 bg-goldAccent rounded-full flex items-center justify-center text-emeraldDeep text-lg shadow-lg group-hover:scale-110 transition"><i class="fa-solid fa-play"></i></span>
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <span class="text-goldAccent text-[10px] font-bold block mb-1">فيديو حصري</span>
+                            <h3 class="text-white font-bold text-sm">كواليس من معسكر الفراعنة وروح معنوية عالية قبل المغادرة</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Custom Lightbox Modal -->
+                <div id="media-lightbox" class="hidden fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4">
+                    <div class="max-w-3xl w-full bg-cardBg border border-cardBorder rounded-2xl overflow-hidden relative">
+                        <!-- Close button -->
+                        <button onclick="closeMediaLightbox()" class="absolute top-4 right-4 bg-black/60 text-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-goldAccent hover:text-emeraldDeep transition z-10">
+                            <i class="fa-solid fa-xmark text-lg"></i>
+                        </button>
+                        
+                        <!-- Content Area -->
+                        <div id="lightbox-content-box" class="aspect-video w-full flex items-center justify-center bg-black">
+                            <!-- Injected dynamically by JS -->
+                        </div>
+                        
+                        <div class="p-6">
+                            <h3 id="lightbox-title" class="text-white font-black text-lg">عنوان الميديا المفتوحة</h3>
+                            <p class="text-xs text-gray-400 mt-2">منصة ArabWorldCup - نأخذك لقلب المونديال الكروي</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PAGE 7: SCHEDULES (جدول المباريات والنتائج الحية) ================= -->
+        <section id="page-schedules" class="page-section">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12 border-b border-emeraldLight/20 pb-6">
+                    <div>
+                        <h1 class="text-3xl font-black text-white"><i class="fa-solid fa-calendar-days text-goldAccent ml-2"></i> جدول مباريات ونتائج كأس العالم الحية</h1>
+                        <p class="text-sm text-gray-400 mt-1">تابع مواعيد المباريات لحظة بلحظة لجميع المجموعات والتصفيات الكروية، والنتائج مع أحداث حية تفصيلية.</p>
+                    </div>
+                    <!-- Score Status Filters -->
+                    <div class="flex gap-2">
+                        <button onclick="filterMatches('all')" id="match-tab-all" class="bg-goldAccent text-emeraldDeep font-extrabold px-4 py-2 rounded-xl text-xs transition">جميع المباريات</button>
+                        <button onclick="filterMatches('live')" id="match-tab-live" class="bg-cardBg hover:bg-emeraldLight/20 border border-cardBorder text-gray-300 font-bold px-4 py-2 rounded-xl text-xs transition flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 bg-coralRed rounded-full live-pulse"></span> حية الآن
+                        </button>
+                        <button onclick="filterMatches('upcoming')" id="match-tab-upcoming" class="bg-cardBg hover:bg-emeraldLight/20 border border-cardBorder text-gray-300 font-bold px-4 py-2 rounded-xl text-xs transition">القادمة</button>
+                    </div>
+                </div>
+
+                <!-- Matches List Container -->
+                <div class="space-y-6" id="matches-list-container">
+                    <!-- Matches injected by JS -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="bg-emeraldDeep border-t border-goldAccent/20 py-12 mt-16 text-center text-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+            <div class="flex justify-center items-center gap-3">
+                <div class="w-10 h-10 bg-gradient-to-tr from-goldAccent to-emeraldLight rounded-full flex items-center justify-center shadow">
+                    <i class="fa-solid fa-trophy text-emeraldDeep text-xl"></i>
+                </div>
+                <span class="text-xl font-black text-white">ArabWorldCup - عرب مونديال</span>
+            </div>
+            <p class="text-gray-400 max-w-md mx-auto leading-relaxed">
+                البوابة العربية الأولى المتخصصة بالكامل بمونديال كرة القدم، نهتم بنقل شغف كرة القدم المونديالي لكل الجماهير العربية.
+            </p>
+            
+            <!-- Social Icons -->
+            <div class="flex justify-center gap-4 text-gray-400">
+                <a href="#" class="w-10 h-10 rounded-full bg-cardBg hover:bg-goldAccent hover:text-emeraldDeep flex items-center justify-center transition border border-cardBorder"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="#" class="w-10 h-10 rounded-full bg-cardBg hover:bg-goldAccent hover:text-emeraldDeep flex items-center justify-center transition border border-cardBorder"><i class="fa-brands fa-x-twitter"></i></a>
+                <a href="#" class="w-10 h-10 rounded-full bg-cardBg hover:bg-goldAccent hover:text-emeraldDeep flex items-center justify-center transition border border-cardBorder"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#" class="w-10 h-10 rounded-full bg-cardBg hover:bg-goldAccent hover:text-emeraldDeep flex items-center justify-center transition border border-cardBorder"><i class="fa-brands fa-youtube"></i></a>
+            </div>
+
+            <div class="border-t border-emeraldLight/20 pt-8 text-xs text-gray-400 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <span>© 2026 ArabWorldCup - جميع الحقوق محفوظة لمنصة المونديال العربية</span>
+                <div class="flex gap-4">
+                    <a href="#" class="hover:text-goldAccent transition">سياسة الخصوصية</a>
+                    <a href="#" class="hover:text-goldAccent transition">شروط الخدمة</a>
+                    <a href="#" class="hover:text-goldAccent transition">اتصل بنا</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- MOCK DATABASE AND SYSTEM DATA ---
+        
+        // News DB
+        const newsData = [
+            {
+                id: 1,
+                title: "المغرب يبهر العالم ويحقق تأهلاً أسطورياً لمربع الذهب المونديالي",
+                summary: "بأداء استثنائي وعزيمة حديدية، تجاوز المنتخب المغربي ربع النهائي مكرساً تفوقاً عربياً تاريخياً لم تشهده البطولة من قبل.",
+                category: "arab",
+                image: "https://placehold.co/600x400/0a2e24/ffffff?text=Morocco+Victory",
+                date: "اليوم، 14:30",
+                author: "سليم الرميحي",
+                tag: "المغرب"
+            },
+            {
+                id: 2,
+                title: "سوبر كمبيوتر المونديال يتنبأ بفرص المنتخبات للتتويج بالنسخة المقبلة",
+                summary: "استخدم مركز التحليل الرقمي بالمنصة حاسوبنا الفائق المخصص في رصد مستويات المنتخبات وتوقع هوية بطل المونديال ونسب فوزه.",
+                category: "predictions",
+                image: "https://placehold.co/600x400/0a2e24/ffffff?text=Supercomputer",
+                date: "أمس، 18:20",
+                author: "مروان الكواري",
+                tag: "توقعات"
+            },
+            {
+                id: 3,
+                title: "الصحف العالمية تحتفل بالأخضر السعودي بعد العرض المميز وتاريخية ميسي",
+                summary: "اهتمت كبرى وسائل الإعلام بالانتصار التكتيكي لكتيبة الأخضر والأداء البطولي الذي تكلل بإعجاب جماهيري جارف على مستوى العالم.",
+                category: "arab",
+                image: "https://placehold.co/600x400/0a2e24/ffffff?text=Saudi+Hero",
+                date: "قبل يومين",
+                author: "فهد الشهري",
+                tag: "السعودية"
+            },
+            {
+                id: 4,
+                title: "دييغو مارادونا وتاريخ يروى عن ملحمة 1986 الشهيرة بالمكسيك",
+                summary: "نعيد سرد أهم القصص الكروية والحكايات المشوقة التي ارتبطت بأسطورة اللعبة الأرجنتيني مارادونا ونقله للقب بمجهود بطولي فردي.",
+                category: "history",
+                image: "https://placehold.co/600x400/0a2e24/ffffff?text=Diego+Maradona",
+                date: "قبل 3 أيام",
+                author: "متحف المونديال",
+                tag: "تاريخ"
+            },
+            {
+                id: 5,
+                title: "البرغوث ميسي: مستقبلي الكروي يتقرر بشكل نهائي مع نهاية غمار البطولة",
+                summary: "في حوار خاص أكد النجم الأرجنتيني ميسي أن مشاركته الحالية تحسم شكل مشواره وقرار اعتزاله أو إكمال مسيرته الأسطورية.",
+                category: "players",
+                image: "https://placehold.co/600x400/0a2e24/ffffff?text=Lionel+Messi",
+                date: "قبل 4 أيام",
+                author: "ياسر المصري",
+                tag: "ميسي"
+            },
+            {
+                id: 6,
+                title: "سالم الدوسري يعلن الجاهزية التامة لخوض مباريات الحسم بالقمصان الخضراء",
+                summary: "بأفضل فتراته اللياقية، يؤكد تورنيدو الكرة السعودية جاهزيته الكاملة لتحفيز الأخضر ومواصلة رحلة الحلم المونديالي الاستثنائي.",
+                category: "players",
+                image: "https://placehold.co/600x400/0a2e24/ffffff?text=Salem+Al-Dawsari",
+                date: "قبل 5 أيام",
+                author: "فهد الشهري",
+                tag: "السعودية"
+            }
+        ];
+
+        // Matches Data
+        const matchesData = [
+            {
+                id: 1,
+                group: "المجموعة الأولى - الجولة الثالثة",
+                team1: "المغرب",
+                team1Img: "https://placehold.co/80x80/2a3e35/ffffff?text=MAR",
+                team2: "بلجيكا",
+                team2Img: "https://placehold.co/80x80/2a3e35/ffffff?text=BEL",
+                score1: 2,
+                score2: 0,
+                time: "منتهية",
+                status: "finished",
+                date: "25 يونيو 2026",
+                liveEvent: "فوز مستحق لأسود الأطلس وتأهل تاريخي متصدراً للمجموعة الأولى."
+            },
+            {
+                id: 2,
+                group: "المجموعة الثالثة - الجولة الثانية",
+                team1: "السعودية",
+                team1Img: "https://placehold.co/80x80/2a3e35/ffffff?text=KSA",
+                team2: "الأرجنتين",
+                team2Img: "https://placehold.co/80x80/2a3e35/ffffff?text=ARG",
+                score1: 2,
+                score2: 1,
+                time: "د 78'",
+                status: "live",
+                date: "مباشر الآن",
+                liveEvent: "سالم الدوسري يطلق قذيفة لا تصد ولا ترد في المقص الأيمن للحارس مارتينيز!"
+            },
+            {
+                id: 3,
+                group: "المجموعة الخامسة - الجولة الثالثة",
+                team1: "تونس",
+                team1Img: "https://placehold.co/80x80/2a3e35/ffffff?text=TUN",
+                team2: "فرنسا",
+                team2Img: "https://placehold.co/80x80/2a3e35/ffffff?text=FRA",
+                score1: 0,
+                score2: 0,
+                time: "الساعة 20:00",
+                status: "upcoming",
+                date: "الليلة، 20:00 بتوقيت مكة المكرمة",
+                liveEvent: "توقعات نارية وتصريحات قوية للمدير الفني التونسي الساعي للإطاحة بالديوك."
+            },
+            {
+                id: 4,
+                group: "المجموعة الثانية - الجولة الثانية",
+                team1: "الجزائر",
+                team1Img: "https://placehold.co/80x80/2a3e35/ffffff?text=ALG",
+                team2: "إيطاليا",
+                team2Img: "https://placehold.co/80x80/2a3e35/ffffff?text=ITA",
+                score1: 0,
+                score2: 0,
+                time: "غداً، 17:00",
+                status: "upcoming",
+                date: "غداً، 17:00 بتوقيت مكة المكرمة",
+                liveEvent: "صدام كروي ناري مرتقب لإنعاش آمال المحاربين الجزائريين في مجموعتهم القوية."
+            }
+        ];
+
+        // Trivia Quiz Data
+        const quizData = [
+            {
+                id: 1,
+                question: "أي بلد كان أول من يستضيف بطولة كأس العالم لكرة القدم في التاريخ عام 1930؟",
+                options: ["الأوروغواي", "البرازيل", "فرنسا", "إيطاليا"],
+                correctAnswerIndex: 0
+            },
+            {
+                id: 2,
+                question: "من هو الهداف التاريخي لكأس العالم على مر العصور برصيد 16 هدفاً؟",
+                options: ["بيليه", "رونالدو الظاهرة", "ميروسلاف كلوزه", "ليونيل ميسي"],
+                correctAnswerIndex: 2
+            },
+            {
+                id: 3,
+                question: "أي منتخب عربي كان أول من تأهل للدور الثاني في تاريخ كأس العالم؟",
+                options: ["المنتخب الجزائري", "المنتخب التونسي", "المنتخب السعودي", "المنتخب المغربي"],
+                correctAnswerIndex: 3
+            }
+        ];
+
+        // System interactive states
+        let currentQuizIndex = 0;
+        let userPoints = 0;
+        let cheeringCounts = {
+            morocco: 1240,
+            saudi: 950,
+            egypt: 820
+        };
+
+        // Live Hero match score simulation tick
+        setInterval(() => {
+            const heroScore = document.getElementById('live-hero-score');
+            const heroTime = document.getElementById('live-hero-time');
+            if (heroScore && heroTime) {
+                // simple cycle simulated event
+                let minutes = parseInt(heroTime.innerText.replace('د ', '').replace("'", ''));
+                if (minutes < 90) {
+                    minutes += 1;
+                    heroTime.innerText = `د ${minutes}'`;
+                } else {
+                    heroTime.innerText = `د 90'`;
+                }
+            }
+        }, 12000); // simulation interval
+
+        // --- NAVIGATION STATE ---
+        function navigateTo(pageId) {
+            // Hide all sections
+            document.querySelectorAll('.page-section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Show current section
+            const targetSection = document.getElementById(`page-${pageId}`);
+            if (targetSection) {
+                targetSection.classList.add('active');
+            }
+
+            // Manage nav active classes
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-goldAccent', 'bg-emeraldLight/30');
+                btn.classList.add('text-gray-300');
+            });
+            const activeBtn = document.getElementById(`btn-${pageId}`);
+            if (activeBtn) {
+                activeBtn.classList.add('text-goldAccent', 'bg-emeraldLight/30');
+                activeBtn.classList.remove('text-gray-300');
+            }
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            const menuIcon = document.getElementById('menu-icon');
+            if (mobileMenu.classList.contains('hidden')) {
+                mobileMenu.classList.remove('hidden');
+                menuIcon.className = "fa-solid fa-xmark text-2xl";
+            } else {
+                mobileMenu.classList.add('hidden');
+                menuIcon.className = "fa-solid fa-bars text-2xl";
+            }
+        }
+
+        // --- HELPER ALERT NOTIFICATIONS ---
+        function triggerAlert(message, type = 'success') {
+            const container = document.getElementById('alert-container');
+            if (!container) return;
+
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `p-4 rounded-xl shadow-lg border text-xs font-bold transition-all duration-300 transform translate-x-10 opacity-0 pointer-events-auto flex items-center gap-2 ${
+                type === 'success' 
+                    ? 'bg-emeraldDeep border-emeraldLight text-white' 
+                    : 'bg-cardBg border-goldAccent/40 text-goldAccent'
+            }`;
+            
+            alertDiv.innerHTML = `
+                <i class="fa-solid ${type === 'success' ? 'fa-circle-check text-emeraldLight' : 'fa-info-circle text-goldAccent'} text-base"></i>
+                <span>${message}</span>
+            `;
+
+            container.appendChild(alertDiv);
+            
+            // Animate In
+            setTimeout(() => {
+                alertDiv.classList.remove('translate-x-10', 'opacity-0');
+            }, 50);
+
+            // Animate Out & Remove
+            setTimeout(() => {
+                alertDiv.classList.add('translate-x-10', 'opacity-0');
+                setTimeout(() => {
+                    alertDiv.remove();
+                }, 300);
+            }, 4000);
+        }
+
+        // --- NEWS LOGIC ---
+        function renderNews(filterCategory = 'all', searchQuery = '') {
+            const gridContainer = document.getElementById('news-grid-container');
+            if (!gridContainer) return;
+
+            gridContainer.innerHTML = '';
+            
+            const filteredNews = newsData.filter(news => {
+                const categoryMatch = filterCategory === 'all' || news.category === filterCategory;
+                const searchMatch = searchQuery === '' || 
+                    news.title.includes(searchQuery) || 
+                    news.summary.includes(searchQuery) || 
+                    news.tag.includes(searchQuery);
+                return categoryMatch && searchMatch;
+            });
+
+            if (filteredNews.length === 0) {
+                gridContainer.innerHTML = `
+                    <div class="col-span-full py-12 text-center text-gray-400">
+                        <i class="fa-regular fa-folder-open text-4xl mb-4 block text-goldAccent"></i>
+                        <p class="font-bold">عذراً، لم نجد أي أخبار مطابقة للتصفية الحالية.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            filteredNews.forEach(news => {
+                const card = document.createElement('div');
+                card.className = "bg-cardBg border border-cardBorder rounded-2xl overflow-hidden shadow-md hover:border-emeraldLight/60 transition group";
+                
+                card.innerHTML = `
+                    <div class="relative overflow-hidden aspect-video">
+                        <img src="${news.image}" alt="${news.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" onerror="this.src='https://placehold.co/600x400/0a2e24/ffffff?text=${news.tag}'">
+                        <span class="absolute top-3 right-3 bg-emeraldDeep/80 border border-emeraldLight text-[10px] text-white font-extrabold px-2.5 py-1 rounded-full">#${news.tag}</span>
+                    </div>
+                    <div class="p-5 space-y-3">
+                        <div class="flex items-center gap-2 text-xs text-gray-400">
+                            <span><i class="fa-regular fa-user ml-1 text-goldAccent"></i> ${news.author}</span>
+                            <span>•</span>
+                            <span><i class="fa-regular fa-clock ml-1"></i> ${news.date}</span>
+                        </div>
+                        <h3 class="text-base font-black text-white group-hover:text-goldAccent transition leading-snug line-clamp-2">${news.title}</h3>
+                        <p class="text-xs text-gray-300 leading-relaxed line-clamp-3">${news.summary}</p>
+                        <div class="pt-2 border-t border-emeraldLight/25 flex justify-between items-center text-xs">
+                            <span class="text-goldAccent font-bold">اقرأ الخبر كاملاً</span>
+                            <i class="fa-solid fa-arrow-left text-goldAccent"></i>
+                        </div>
+                    </div>
+                `;
+
+                // Add simulated full reading action on click
+                card.onclick = () => {
+                    triggerAlert(`شاهدت خبر: "${news.title.substring(0, 30)}..." سنقوم بنقلك لقسم التفاصيل الشاملة قريباً.`);
+                };
+
+                gridContainer.appendChild(card);
+            });
+        }
+
+        function filterNews() {
+            const selectedVal = document.getElementById('news-category-filter').value;
+            renderNews(selectedVal);
+        }
+
+        function searchByTag(tag) {
+            navigateTo('home');
+            renderNews('all', tag);
+            triggerAlert(`تمت تصفية الأخبار حسب الهاشتاج: #${tag}`, 'info');
+        }
+
+        // --- LIVE POLL SYSTEM ---
+        const pollOptions = [
+            { id: 'mor', label: 'المغرب (أسود الأطلس)', votes: 540 },
+            { id: 'ksa', label: 'السعودية (الصقور الخضر)', votes: 410 },
+            { id: 'egy', label: 'مصر (الفراعنة)', votes: 310 },
+            { id: 'tun', label: 'تونس (نسور قرطاج)', votes: 190 }
+        ];
+
+        function renderPoll() {
+            const container = document.getElementById('poll-options-container');
+            if (!container) return;
+
+            container.innerHTML = '';
+            const totalVotes = pollOptions.reduce((sum, item) => sum + item.votes, 0);
+
+            pollOptions.forEach(opt => {
+                const pct = Math.round((opt.votes / totalVotes) * 100);
+                const itemDiv = document.createElement('div');
+                itemDiv.className = "relative bg-emeraldDeep/40 border border-emeraldLight/20 p-4 rounded-xl cursor-pointer hover:border-goldAccent/40 transition-all overflow-hidden group";
+                itemDiv.onclick = () => castPollVote(opt.id);
+
+                itemDiv.innerHTML = `
+                    <div class="absolute inset-y-0 right-0 bg-emeraldLight/15 transition-all duration-500 group-hover:bg-emeraldLight/25" style="width: ${pct}%"></div>
+                    <div class="relative z-10 flex justify-between items-center">
+                        <span class="font-bold text-xs sm:text-sm text-white">${opt.label}</span>
+                        <div class="flex items-center gap-3">
+                            <span class="text-xs text-gray-400 font-bold">${opt.votes} صوت</span>
+                            <span class="text-goldAccent font-black text-sm">${pct}%</span>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(itemDiv);
+            });
+        }
+
+        function castPollVote(optionId) {
+            const selectedOpt = pollOptions.find(o => o.id === optionId);
+            if (selectedOpt) {
+                selectedOpt.votes += 1;
+                renderPoll();
+                triggerAlert(`شكراً لتصويتك لـ ${selectedOpt.label}! تم تسجيل هتافك بنجاح.`);
+            }
+        }
+
+        // --- INTERACTIVE MATCH PREDICTORS ---
+        const votesData = {
+            'mar-esp': { team1: 54, draw: 16, team2: 30 },
+            'ksa-mex': { team1: 42, draw: 23, team2: 35 }
+        };
+
+        function castPredictorVote(matchKey, choice) {
+            const currentVotes = votesData[matchKey];
+            if (!currentVotes) return;
+
+            // increment chosen selection percentage slightly
+            currentVotes[choice] += 3;
+            
+            // Normalize sum to 100
+            const total = currentVotes.team1 + currentVotes.draw + currentVotes.team2;
+            currentVotes.team1 = Math.round((currentVotes.team1 / total) * 100);
+            currentVotes.draw = Math.round((currentVotes.draw / total) * 100);
+            currentVotes.team2 = 100 - (currentVotes.team1 + currentVotes.draw);
+
+            // update visual DOM percentages
+            document.getElementById(`${matchKey}-t1-pct`).innerText = currentVotes.team1;
+            document.getElementById(`${matchKey}-dr-pct`).innerText = currentVotes.draw;
+            document.getElementById(`${matchKey}-t2-pct`).innerText = currentVotes.team2;
+
+            document.getElementById(`${matchKey}-t1-bar`).style.width = `${currentVotes.team1}%`;
+            document.getElementById(`${matchKey}-dr-bar`).style.width = `${currentVotes.draw}%`;
+            document.getElementById(`${matchKey}-t2-bar`).style.width = `${currentVotes.team2}%`;
+
+            triggerAlert(`تم إرسال توقعك للمباراة بنجاح! شكراً لمشاركتك الكروية الفعالة.`, 'success');
+        }
+
+        // --- PLAYERS LOGIC ---
+        function renderPlayersList() {
+            const container = document.getElementById('players-news-container');
+            if (!container) return;
+
+            container.innerHTML = '';
+            
+            // Players-focused news items
+            const playerNews = newsData.filter(item => item.category === 'players' || item.tag === 'المغرب' || item.tag === 'السعودية');
+
+            playerNews.forEach(news => {
+                const card = document.createElement('div');
+                card.className = "bg-cardBg border border-cardBorder rounded-2xl overflow-hidden hover:border-emeraldLight/65 transition p-5 flex gap-4 items-center";
+                
+                card.innerHTML = `
+                    <img src="${news.image}" alt="${news.title}" class="w-16 h-16 rounded-xl object-cover border border-emeraldLight/30" onerror="this.src='https://placehold.co/100x100/111d17/ffffff?text=${news.tag}'">
+                    <div class="space-y-1">
+                        <span class="text-[10px] text-goldAccent font-black block">#${news.tag}</span>
+                        <h3 class="text-sm font-bold text-white leading-snug line-clamp-2">${news.title}</h3>
+                        <p class="text-[11px] text-gray-400 line-clamp-1">${news.summary}</p>
+                    </div>
+                `;
+
+                card.onclick = () => {
+                    triggerAlert(`تفاصيل حصرية للاعب ${news.tag}: متواجد حالياً في المعسكر الرئيسي وجاهز للعب.`);
+                };
+
+                container.appendChild(card);
+            });
+        }
+
+        function searchPlayers() {
+            const searchVal = document.getElementById('player-search-input').value.toLowerCase();
+            const cards = document.querySelectorAll('#players-news-container > div');
+            
+            cards.forEach(card => {
+                const text = card.textContent.toLowerCase();
+                if (text.includes(searchVal)) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // --- WORLD CUP TRIVIA MINI-GAME ---
+        function loadQuizQuestion() {
+            const currentQuestion = quizData[currentQuizIndex];
+            
+            document.getElementById('quiz-question-number').innerText = `السؤال ${currentQuizIndex + 1} من ${quizData.length}`;
+            document.getElementById('quiz-question').innerText = currentQuestion.question;
+            
+            const optionsContainer = document.getElementById('quiz-options');
+            optionsContainer.innerHTML = '';
+            
+            currentQuestion.options.forEach((opt, idx) => {
+                const optBtn = document.createElement('button');
+                optBtn.className = "w-full text-right p-4 rounded-xl bg-emeraldDeep border border-emeraldLight/20 hover:border-goldAccent text-xs text-white transition-all font-semibold";
+                optBtn.innerText = opt;
+                optBtn.onclick = () => checkQuizAnswer(idx, optBtn);
+                optionsContainer.appendChild(optBtn);
+            });
+
+            document.getElementById('quiz-next-btn').classList.add('hidden');
+        }
+
+        function checkQuizAnswer(selectedIdx, buttonElement) {
+            const currentQuestion = quizData[currentQuizIndex];
+            const allOptionsBtns = document.querySelectorAll('#quiz-options > button');
+            
+            // disable all buttons
+            allOptionsBtns.forEach(btn => btn.disabled = true);
+
+            if (selectedIdx === currentQuestion.correctAnswerIndex) {
+                userPoints += 10;
+                document.getElementById('quiz-score').innerText = userPoints;
+                buttonElement.className = "w-full text-right p-4 rounded-xl bg-emeraldLight text-white border border-emeraldLight text-xs transition-all font-black";
+                triggerAlert('إجابة صحيحة ومذهلة! أحسنت يا خبير الكورة.', 'success');
+            } else {
+                buttonElement.className = "w-full text-right p-4 rounded-xl bg-coralRed text-white border border-coralRed text-xs transition-all font-black";
+                // Show correct answer in green
+                allOptionsBtns[currentQuestion.correctAnswerIndex].className = "w-full text-right p-4 rounded-xl bg-emeraldLight text-white border border-emeraldLight text-xs transition-all font-black";
+                triggerAlert('إجابة غير صحيحة، ركز جيداً في السؤال القادم!', 'info');
+            }
+
+            document.getElementById('quiz-next-btn').classList.remove('hidden');
+        }
+
+        function nextQuizQuestion() {
+            if (currentQuizIndex < quizData.length - 1) {
+                currentQuizIndex++;
+                loadQuizQuestion();
+            } else {
+                // finished state
+                const quizContainer = document.getElementById('quiz-container');
+                quizContainer.innerHTML = `
+                    <div class="text-center py-6 space-y-4">
+                        <i class="fa-solid fa-trophy text-goldAccent text-5xl animate-bounce"></i>
+                        <h3 class="text-xl font-black text-white">مبروك! أنهيت مسابقة المونديال بنجاح</h3>
+                        <p class="text-xs text-gray-300">مجموع نقاطك النهائية المحققة: <strong class="text-goldAccent text-sm">${userPoints} نقطة من أصل 30</strong></p>
+                        <button onclick="restartQuiz()" class="bg-goldAccent hover:bg-goldHover text-emeraldDeep font-black px-6 py-2.5 rounded-xl text-xs transition">
+                            أعد التحدي من جديد
+                        </button>
+                    </div>
+                `;
+                document.getElementById('quiz-next-btn').classList.add('hidden');
+            }
+        }
+
+        function restartQuiz() {
+            currentQuizIndex = 0;
+            userPoints = 0;
+            document.getElementById('quiz-score').innerText = userPoints;
+            
+            // Restore quiz container HTML
+            const quizContainer = document.getElementById('quiz-container');
+            quizContainer.innerHTML = `
+                <span class="text-xs text-goldAccent font-bold" id="quiz-question-number">السؤال 1 من 3</span>
+                <h3 class="text-lg font-bold text-white mt-2" id="quiz-question"></h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6" id="quiz-options"></div>
+            `;
+            
+            loadQuizQuestion();
+        }
+
+        // --- FAN ZONE CHEER WALL ---
+        function cheerTeam(teamId) {
+            cheeringCounts[teamId] += 1;
+            document.getElementById(`cheers-${teamId}`).innerText = cheeringCounts[teamId].toLocaleString();
+            
+            // Add virtual clapping sound placeholder / simple alert
+            triggerAlert(`سمعنا صوت هتافك لمنتخبك المفضل! استمر في مؤازرة النجوم العرب.`, 'success');
+        }
+
+        // --- MEDIA GALLERY LIGHTBOX SYSTEM ---
+        function filterMedia(category) {
+            const items = document.querySelectorAll('.media-item');
+            
+            // Toggle active classes on tabs
+            document.querySelectorAll('[id^="media-tab-"]').forEach(btn => {
+                btn.className = "bg-cardBg hover:bg-emeraldLight/25 border border-cardBorder text-gray-300 font-bold px-4 py-2 rounded-xl text-xs transition";
+            });
+            document.getElementById(`media-tab-${category}`).className = "bg-goldAccent text-emeraldDeep font-bold px-4 py-2 rounded-xl text-xs transition";
+
+            items.forEach(item => {
+                if (category === 'all' || item.classList.contains(category)) {
+                    item.classList.remove('hidden');
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+        }
+
+        function openMediaLightbox(type, title, placeholderUrl) {
+            const lightbox = document.getElementById('media-lightbox');
+            const titleEl = document.getElementById('lightbox-title');
+            const contentBox = document.getElementById('lightbox-content-box');
+            
+            titleEl.innerText = title;
+            lightbox.classList.remove('hidden');
+
+            if (type === 'video') {
+                contentBox.innerHTML = `
+                    <div class="relative w-full h-full flex items-center justify-center bg-emeraldDeep/25">
+                        <img src="${placeholderUrl}" alt="Video Banner" class="absolute inset-0 w-full h-full object-cover opacity-40">
+                        <div class="relative text-center space-y-3 z-10 p-4">
+                            <span class="w-16 h-16 bg-goldAccent text-emeraldDeep rounded-full flex items-center justify-center mx-auto text-xl shadow-lg shadow-goldAccent/20"><i class="fa-solid fa-circle-play"></i></span>
+                            <span class="text-sm font-bold text-white block">محاكاة تشغيل ملف الفيديو بجودة عالية HD</span>
+                            <p class="text-[10px] text-gray-300 max-w-sm">سيتم توجيهك قريباً لقنواتنا الناقلة الحصرية لمشاهدة ملخص اللقاء كاملاً.</p>
+                        </div>
+                    </div>
+                `;
+            } else {
+                contentBox.innerHTML = `
+                    <img src="${placeholderUrl}" alt="${title}" class="max-w-full max-h-full object-contain">
+                `;
+            }
+        }
+
+        function closeMediaLightbox() {
+            document.getElementById('media-lightbox').classList.add('hidden');
+            document.getElementById('lightbox-content-box').innerHTML = '';
+        }
+
+        // --- MATCHES AND LIVE SCORES CENTER ---
+        function renderMatches(filterType = 'all') {
+            const matchesContainer = document.getElementById('matches-list-container');
+            if (!matchesContainer) return;
+
+            matchesContainer.innerHTML = '';
+
+            const filteredMatches = matchesData.filter(match => {
+                if (filterType === 'all') return true;
+                return match.status === filterType;
+            });
+
+            if (filteredMatches.length === 0) {
+                matchesContainer.innerHTML = `
+                    <div class="py-12 text-center text-gray-400 bg-cardBg rounded-2xl border border-cardBorder">
+                        <i class="fa-solid fa-gamepad text-4xl mb-4 block text-goldAccent"></i>
+                        <p class="font-bold">لا يوجد مباريات جارية حالياً مطابقة لهذا التصنيف.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            filteredMatches.forEach(match => {
+                const matchCard = document.createElement('div');
+                matchCard.className = `bg-cardBg border rounded-2xl p-6 shadow-md transition-all ${
+                    match.status === 'live' ? 'border-coralRed bg-gradient-to-tr from-cardBg to-coralRed/5' : 'border-cardBorder hover:border-emeraldLight/40'
+                }`;
+
+                matchCard.innerHTML = `
+                    <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-4 pb-4 border-b border-emeraldLight/20">
+                        <span class="text-xs text-goldAccent font-bold">${match.group}</span>
+                        <div class="flex items-center gap-3">
+                            <span class="text-xs text-gray-400 font-semibold"><i class="fa-regular fa-calendar ml-1"></i> ${match.date}</span>
+                            ${match.status === 'live' ? '<span class="bg-coralRed text-white text-[10px] px-2.5 py-0.5 rounded-full font-bold live-pulse flex items-center gap-1"><span class="w-1 h-1 bg-white rounded-full"></span> مباشر</span>' : ''}
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-12 gap-2 items-center text-center">
+                        <!-- Team 1 -->
+                        <div class="col-span-5 md:col-span-4 space-y-2">
+                            <img src="${match.team1Img}" alt="${match.team1}" class="w-14 h-14 mx-auto rounded-full border-2 border-emeraldLight/30" onerror="this.src='https://placehold.co/80x80/2a3e35/ffffff?text=${match.team1}'">
+                            <span class="block font-bold text-sm sm:text-base text-white">${match.team1}</span>
+                        </div>
+
+                        <!-- Scoreboard Area -->
+                        <div class="col-span-2 md:col-span-4 flex flex-col items-center justify-center">
+                            <div class="bg-emeraldDeep/80 border border-emeraldLight/30 px-4 py-2 rounded-xl flex items-center justify-center gap-3">
+                                <span class="text-xl sm:text-3xl font-black ${match.status === 'live' ? 'text-coralRed' : 'text-goldAccent'}">${match.score1}</span>
+                                <span class="text-gray-500 font-extrabold">-</span>
+                                <span class="text-xl sm:text-3xl font-black ${match.status === 'live' ? 'text-coralRed' : 'text-goldAccent'}">${match.score2}</span>
+                            </div>
+                            <span class="text-xs font-bold text-gray-400 mt-2 bg-emeraldDeep/40 px-3 py-1 rounded-full border border-cardBorder">${match.time}</span>
+                        </div>
+
+                        <!-- Team 2 -->
+                        <div class="col-span-5 md:col-span-4 space-y-2">
+                            <img src="${match.team2Img}" alt="${match.team2}" class="w-14 h-14 mx-auto rounded-full border-2 border-emeraldLight/30" onerror="this.src='https://placehold.co/80x80/2a3e35/ffffff?text=${match.team2}'">
+                            <span class="block font-bold text-sm sm:text-base text-white">${match.team2}</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 pt-4 border-t border-emeraldLight/20 text-xs text-gray-400 flex flex-col sm:flex-row justify-between items-center gap-3">
+                        <span class="leading-relaxed"><i class="fa-solid fa-circle-info text-goldAccent ml-1"></i> ${match.liveEvent}</span>
+                        <button onclick="simulatePrediction('${match.team1}', '${match.team2}')" class="bg-emeraldLight/20 hover:bg-emeraldLight text-white font-bold py-1.5 px-4 rounded-xl transition whitespace-nowrap">
+                            توقع اللقاء الآن
+                        </button>
+                    </div>
+                `;
+
+                matchesContainer.appendChild(matchCard);
+            });
+        }
+
+        function filterMatches(status) {
+            // update tab styling
+            document.querySelectorAll('[id^="match-tab-"]').forEach(btn => {
+                btn.className = "bg-cardBg hover:bg-emeraldLight/20 border border-cardBorder text-gray-300 font-bold px-4 py-2 rounded-xl text-xs transition";
+            });
+            document.getElementById(`match-tab-${status}`).className = "bg-goldAccent text-emeraldDeep font-extrabold px-4 py-2 rounded-xl text-xs transition";
+
+            renderMatches(status);
+        }
+
+        function simulatePrediction(t1, t2) {
+            navigateTo('predictions');
+            triggerAlert(`توقع النتيجة الآن بين ${t1} و ${t2} في مركز التوقعات التفاعلي!`, 'info');
+        }
+
+        // --- WINDOW LOAD & BOOTSTRAP ---
+        window.onload = function() {
+            // Render Initial Dynamic Elements
+            renderNews();
+            renderPoll();
+            renderPlayersList();
+            loadQuizQuestion();
+            renderMatches();
+            
+            // Default Welcome Alert
+            triggerAlert('مرحباً بك في ArabWorldCup! تغطية حية لملحمة كأس العالم الحالية.', 'success');
+        };
+    </script>
+</body>
+</html>
